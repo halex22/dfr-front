@@ -7,18 +7,25 @@ export class AuthenticationService {
 
   readonly baseUrl = 'http://localhost:8000/api/'
   private readonly access_key = 'access_token' 
-  private readonly refresh_key = 'access_token' 
+  private readonly refresh_key = 'refresh_token' 
 
   constructor() { }
 
   login(credentials: {username: string, password: string }) {
-    fetch(this.baseUrl + 'token/', {
+    return fetch(this.baseUrl + 'token/', {
       method: "POST",
+      headers: {
+        'Content-Type': 'application/json'
+      },
       body: JSON.stringify(credentials)
     })
-    .then(res => res.json())
+    .then(res => {
+      if (!res.ok) throw new Error('wrong credentials or account not found')
+      return  res.json()
+    })
     .then(data => {
-      console.log(data)
+      localStorage.setItem(this.access_key, data.access)
+      localStorage.setItem(this.refresh_key, data.refresh)
     })
   }
 }

@@ -9,5 +9,22 @@ export class DataService {
 
   constructor() { }
 
-  
+  addMessage(msgText: string) {
+    const token = localStorage.getItem('access_token')
+
+    return fetch(this.baseUrl + 'messages/', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`,
+
+      },
+      body: JSON.stringify({text: msgText})
+    })
+    .then(res => {
+      console.log(res)
+      return res.json()
+    })
+    
+  }
 }
